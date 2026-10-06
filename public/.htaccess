@@ -1,0 +1,20 @@
+# AquaFlow — front-controller URL rewriting
+# Routes every request that isn't a real file/folder to index.php,
+# so the app's own Router can match clean URLs like /login, /admin/dashboard, etc.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # If the request is for a real file or directory, serve it directly
+    # (this lets /assets/css/app.css etc. load normally)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Everything else goes through the front controller
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Block direct browser access to .env, .sql, .md files if they ever end up in public/
+<FilesMatch "\.(env|sql|md|log)$">
+    Require all denied
+</FilesMatch>
